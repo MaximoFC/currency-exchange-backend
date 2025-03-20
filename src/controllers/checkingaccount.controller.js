@@ -1,9 +1,9 @@
 const CheckingAccount = require('../models/CheckingAccount');
 
 const createCheckingAccount = async (req, res) => {
-    const { ARS, USD, EUR, id_client } = req.body;
+    const { ARS, USD, EUR } = req.body;
     try {
-        const newCheckingAccount = await CheckingAccount.createCheckingAccount(ARS, USD, EUR, id_client);
+        const newCheckingAccount = await CheckingAccount.createCheckingAccount(ARS, USD, EUR);
         res.status(201).json(newCheckingAccount);
     } catch (error) {
         console.error('Error creating checking account: ', error.message);

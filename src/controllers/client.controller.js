@@ -1,12 +1,12 @@
 const Client = require('../models/Client');
+const CheckingAccount = require('../models/CheckingAccount');
 
 const createClient = async (req, res) => {
-    let { date, id, name, cell } = req.body;
-
-    date = date || new Date();
+    let { name, cell } = req.body;
 
     try {
-        const newClient = Client.createClient(date, id, name, cell);
+        const newClient = await Client.createClient(name, cell);
+        await CheckingAccount.createCheckingAccount(0, 0, 0, newClient.id);
         res.status(201).json(newClient);
     } catch (error) {
         console.error('Error creating client: ', error.message);
