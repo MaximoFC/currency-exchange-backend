@@ -1,5 +1,6 @@
 const Transaction = require('../models/Transaction');
 const Business = require('../models/Business');
+const { addTransactionToSheet } = require('../services/addTransactionToSheets');
 
 const createTransaction = async (req, res) => {
     let { type, date, fromCurrency, toCurrency, amount, price, id_client } = req.body;
@@ -26,6 +27,8 @@ const createTransaction = async (req, res) => {
         }
 
         const newTransaction = await Transaction.createTransaction(type, date, fromCurrency, toCurrency, amount, price, id_client);
+
+        await addTransactionToSheet(newTransaction);
 
         await Business.updateBusinessAmount(fromCurrency, -amount);
         await Business.updateBusinessAmount(toCurrency, amount * price);
