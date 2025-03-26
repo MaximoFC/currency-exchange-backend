@@ -2,9 +2,13 @@ const Transaction = require('../models/Transaction');
 const Business = require('../models/Business');
 
 const createTransaction = async (req, res) => {
-    let { date, id, fromCurrency, toCurrency, amount, id_checkingaccount } = req.body;
+    let { type, date, fromCurrency, toCurrency, amount, price, id_client } = req.body;
 
     date = date || new Date();
+
+    if (!id_client) {
+        return res.status(400).json({ error: "id_client is required" });
+    }
 
     if (!["ars", "usd", "eur"].includes(fromCurrency) || !["ars", "usd", "eur"].includes(toCurrency)) {
         return res.status(400).json({ error: "Invalid currency" });
@@ -12,7 +16,7 @@ const createTransaction = async (req, res) => {
 
     try {
         const business = await Business.getBusiness();
-        
+
         if (!business) {
             return res.status(404).json({ error: "No business found" });
         }
@@ -21,17 +25,18 @@ const createTransaction = async (req, res) => {
             return res.status(400).json({ error: "Insufficient funds" });
         }
 
-        const newTransaction = await Transaction.createTransaction(date, id, fromCurrency, toCurrency, amount, id_checkingaccount);
+        const newTransaction = await Transaction.createTransaction(type, date, fromCurrency, toCurrency, amount, price, id_client);
 
         await Business.updateBusinessAmount(fromCurrency, -amount);
-        await Business.updateBusinessAmount(toCurrency, amount);
+        await Business.updateBusinessAmount(toCurrency, amount * price);
 
-        res.status(201).json(newTransaction);
+        res.status(201).json({ transaction: newTransaction });
     } catch (error) {
         console.error('Error creating transaction: ', error.message);
         res.status(500).json({ error: 'Error creating transaction' });
     }
 };
+
 
 const getTransactions = async (req, res) => {
     try {

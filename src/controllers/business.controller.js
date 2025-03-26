@@ -7,7 +7,7 @@ const createBusiness = async (req, res) => {
         res.status(201).json(newBusiness);
     } catch (error){
         console.error('Error creating business: ', error.message);
-        res.status(500).json({error: 'Error creating business'});
+        res.status(500).json({ error: 'Error creating business' });
     }
 };
 
@@ -24,21 +24,20 @@ const getBusinesses = async (req, res) => {
     }
 };
 
-
-const updateBusinessAmount = async (req, res) => {
+const updateManualBusinessAmount = async (req, res) => {
     const { currency, amount } = req.body;
-
-    if(!["ars", "usd", "eur"].includes(currency)) {
-        return res.status(400).json({error: "Invalid currency"});
+    
+    if (!["ars", "usd", "eur"].includes(currency)) {
+        return res.status(400).json({ error: "Moneda no válida" });
     }
 
     try {
-        const updatedBusiness = await Business.updateBusinessAmount(currency, amount);
+        const updatedBusiness = await Business.updateManualBusinessAmount(currency, amount);
         res.status(200).json(updatedBusiness);
     } catch (error) {
         console.error("Error updating business amount: ", error.message);
-        res.status(500).json({error: "Error updating business amount"});
+        res.status(500).json({ error: "Error updating business amount." });
     }
 };
 
-module.exports = { createBusiness, getBusinesses, updateBusinessAmount };
+module.exports = { createBusiness, getBusinesses, updateManualBusinessAmount };
