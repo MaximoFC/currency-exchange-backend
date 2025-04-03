@@ -7,7 +7,7 @@ const createTransaction = async (req, res) => {
 
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
-    const argentinaTime = new Date(now.getTime() - offset - 3 * 3600000);
+    const argentinaTime = new Date(now.getTime() - offset - 2 * 3600000);
     date = date || argentinaTime.toISOString().slice(0, 19).replace("T", " ");
 
     if (!id_client) {
@@ -34,8 +34,8 @@ const createTransaction = async (req, res) => {
         await addTransactionToSheet(newTransaction);
 
         if (type === "buy") {
-            await Business.updateBusinessAmount(fromCurrency, -amount);
-            await Business.updateBusinessAmount(toCurrency, amount * price);
+            await Business.updateBusinessAmount(fromCurrency, amount);
+            await Business.updateBusinessAmount(toCurrency, -amount * price);
         } else if (type === "sell") {
             await Business.updateBusinessAmount(fromCurrency, amount * price);
             await Business.updateBusinessAmount(toCurrency, -amount);

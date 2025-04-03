@@ -33,7 +33,6 @@ const updateBusinessAmount = async (currency, amount) => {
     const query = `UPDATE business SET ${currency} = ${currency} + $1 WHERE id = 1 RETURNING *`;
 
     try {
-        console.log("Ejecutando consulta SQL:", query, "con valores:", amount); // 🔍 Debug log
         const result = await pool.query(query, [amount]); 
         return result.rows[0];
     } catch (error) {
