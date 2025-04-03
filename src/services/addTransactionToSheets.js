@@ -7,13 +7,25 @@ async function addTransactionToSheet(transaction) {
     const clientName = await getClientNameById(transaction.id_client);
     const range = 'Hoja 1!A2:G1000';
 
+    const translatedType = transaction.type === "buy" ? "Compra" : "Venta";
+
+    const fromCurrency = transaction.fromcurrency.toUpperCase();
+    const toCurrency = transaction.tocurrency.toUpperCase();
+
+    const date = new Date(transaction.date);
+    const formattedDate = `${date.getDate().toString().padStart(2, "0")}/${
+        (date.getMonth() + 1).toString().padStart(2, "0")
+    }/${date.getFullYear()} ${date.getHours().toString().padStart(2, "0")}:${
+        date.getMinutes().toString().padStart(2, "0")
+    }`;
+
     const values = [
         [
             transaction.id,
-            transaction.type,
-            transaction.date,
-            transaction.fromcurrency,
-            transaction.tocurrency,
+            translatedType,
+            formattedDate,
+            fromCurrency,
+            toCurrency,
             transaction.amount,
             transaction.price,
             clientName,
