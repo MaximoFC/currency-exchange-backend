@@ -30,7 +30,6 @@ const updateBusinessAmount = async (currency, amount) => {
         throw new Error("Invalid currency provided");
     }
 
-    // Construimos dinámicamente la consulta para evitar que `currency` se pase como parámetro
     const query = `UPDATE business SET ${currency} = ${currency} + $1 WHERE id = 1 RETURNING *`;
 
     try {

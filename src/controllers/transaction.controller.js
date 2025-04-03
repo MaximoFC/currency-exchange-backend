@@ -5,7 +5,10 @@ const { addTransactionToSheet } = require('../services/addTransactionToSheets');
 const createTransaction = async (req, res) => {
     let { type, date, fromCurrency, toCurrency, amount, price, id_client } = req.body;
 
-    date = date || new Date();
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const argentinaTime = new Date(now.getTime() - offset - 3 * 3600000);
+    date = date || argentinaTime.toISOString().slice(0, 19).replace("T", " ");
 
     if (!id_client) {
         return res.status(400).json({ error: "id_client is required" });
@@ -30,8 +33,15 @@ const createTransaction = async (req, res) => {
 
         await addTransactionToSheet(newTransaction);
 
-        await Business.updateBusinessAmount(fromCurrency, -amount);
-        await Business.updateBusinessAmount(toCurrency, amount * price);
+        if (type === "buy") {
+            await Business.updateBusinessAmount(fromCurrency, -amount);
+            await Business.updateBusinessAmount(toCurrency, amount * price);
+        } else if (type === "sell") {
+            await Business.updateBusinessAmount(fromCurrency, amount * price);
+            await Business.updateBusinessAmount(toCurrency, -amount);
+        } else {
+            return res.status(400).json({error: "Invalid transaction type"});
+        }
 
         res.status(201).json({ transaction: newTransaction });
     } catch (error) {
