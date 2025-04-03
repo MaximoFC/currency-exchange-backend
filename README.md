@@ -76,3 +76,4 @@ The backend exposes an API with the following endpoints:
 👨🏻‍💻 **Máximo Callejas**
 - **Email:** maximofcallejas@gmail.com
 - **GitHub:** [https://github.com/MaximoFC](https://github.com/MaximoFC)
+- **LinkedIn:** [www.linkedin.com/in/maximofcallejas](https://www.linkedin.com/in/maximofcallejas)
