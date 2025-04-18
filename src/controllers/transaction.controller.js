@@ -1,14 +1,13 @@
 const Transaction = require('../models/Transaction');
 const Business = require('../models/Business');
 const { addTransactionToSheet } = require('../services/addTransactionToSheets');
+const { DateTime } = require('luxon');
 
 const createTransaction = async (req, res) => {
     let { type, date, fromCurrency, toCurrency, amount, price, id_client } = req.body;
 
-    const now = new Date();
-    const offset = now.getTimezoneOffset() * 60000;
-    const argentinaTime = new Date(now.getTime() - offset - 2 * 3600000);
-    date = date || argentinaTime.toISOString().slice(0, 19).replace("T", " ");
+    const argentinaTime = DateTime.now().setZone('America/Argentina/Buenos_Aires');
+    date = date || argentinaTime.toFormat('yyyy-LL-dd HH:mm:ss');
 
     if (!id_client) {
         return res.status(400).json({ error: "id_client is required" });
